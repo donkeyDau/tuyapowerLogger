@@ -1,0 +1,2 @@
+pandas=1.5.3
+tuyapower=0.1.0
