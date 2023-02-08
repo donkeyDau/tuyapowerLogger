@@ -1,33 +1,34 @@
 import os
 import json
+import tuyapower
 import pandas as pd
-
 
 FILEPATH = "data.csv"
 
-
 DEVICES = [
     {
-        'plugid': '',
-        'plugip': '',
-        'plugkey': '',
-        'plugvers': '',
-    },
+        'plugid': 'bfe05adcc475194032xhir',
+        'plugip': '192.168.178.34',
+        'plugkey': '86ccc1678b3fd823',
+        'plugvers': '3.3',
+        'name': '1'
+    }
 ]
-
 
 def query_consumption(devices):
     data = []
 
     for device in devices:
-        json_output = tuyapower.json_str(
+        json_output = tuyapower.deviceJSON(
             device['plugid'],
             device['plugip'],
             device['plugkey'],
             device['plugvers']
         )
 
-        data.append(json.reads(json_output))
+        parsed_data = json.loads(json_output)
+        parsed_data['name'] = device['name']
+        data.append(parsed_data)
 
     return data
 
