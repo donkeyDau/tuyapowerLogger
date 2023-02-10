@@ -1,0 +1,64 @@
+import os
+import json
+import tuyapower
+import pandas as pd
+import mysql.connector
+import sqlalchemy
+
+#globals
+
+DEVICES = [
+    {
+        'plugid': '...',
+        'plugip': '...',
+        'plugkey': '...',
+        'plugvers': '...',
+        'name': '.',
+        'mac': '.'
+    }
+]
+
+def query_consumption(devices):
+    data = []
+
+    for device in devices:
+        json_output = tuyapower.deviceJSON(
+            device['plugid'],
+            device['plugip'],
+            device['plugkey'],
+            device['plugvers']
+        )
+
+        parsed_data = json.loads(json_output)
+        parsed_data['name'] = device['name']
+        data.append(parsed_data)
+
+    return data
+
+def write_data_to_db(filepath, data_dict_list):
+    dataframes = [pd.DataFrame(dict_, index=[idx]) 
+        for idx, dict_ in enumerate(data_dict_list)]
+     
+    df = pd.concat(dataframes)
+
+    # MySQL-Connector und senden an DB
+
+    database_username = '...'
+    database_password = '...'
+    database_ip       = '...'
+    database_name     = '...'
+
+    database_connection = sqlalchemy.create_engine('mysql+mysqlconnector://{0}:{1}@{2}/{3}'.
+                                                format(database_username, database_password, 
+                                                        database_ip, database_name))
+    df.to_sql(con=database_connection, name='power_consumption', if_exists='append')
+
+
+def main():
+    data = query_consumption(DEVICES)
+
+    write_data_to_csv(FILEPATH, data)
+
+if __name__ == '__main__':
+    main()
+
