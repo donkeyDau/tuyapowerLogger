@@ -18,6 +18,14 @@ DEVICES = [
     }
 ]
 
+ database_username = '...'
+ database_password = '...'
+ database_ip       = '...'
+ database_name     = '...'
+    
+    
+
+
 def query_consumption(devices):
     data = []
 
@@ -43,11 +51,6 @@ def write_data_to_db(filepath, data_dict_list):
 
     # MySQL-Connector und senden an DB
 
-    database_username = '...'
-    database_password = '...'
-    database_ip       = '...'
-    database_name     = '...'
-
     database_connection = sqlalchemy.create_engine('mysql+mysqlconnector://{0}:{1}@{2}/{3}'.
                                                 format(database_username, database_password, 
                                                         database_ip, database_name))
@@ -57,7 +60,7 @@ def write_data_to_db(filepath, data_dict_list):
 def main():
     data = query_consumption(DEVICES)
 
-    write_data_to_csv(FILEPATH, data)
+    write_data_to_db(FILEPATH, data)
 
 if __name__ == '__main__':
     main()
